@@ -3,7 +3,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export default function Register() {
+export default function Cadastro() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
