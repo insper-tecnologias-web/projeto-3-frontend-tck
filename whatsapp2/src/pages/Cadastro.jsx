@@ -66,14 +66,17 @@ export default function Cadastro() {
           accept="image/*"
           onChange={(e) => setPhoto(e.target.files[0])}
         />
-        <Input name="username" placeholder="Usuário" onChange={handleChange} required />
-        <Input name="email" placeholder="Email" type="email" onChange={handleChange} required />
-        <Input name="password" placeholder="Senha" type="password" onChange={handleChange} required />
         <Input name="name" placeholder="Nome" onChange={handleChange} required />
         <Input name="surname" placeholder="Sobrenome" onChange={handleChange} required />
+        <Input name="email" placeholder="Email" onChange={handleChange} type="email" required />
         <Input name="phone" placeholder="Telefone" onChange={handleChange} required />
+        <Input name="username" placeholder="Usuário" onChange={handleChange} required />
+        <Input name="password" placeholder="Senha" onChange={handleChange} type="password" required />
         <Button type="submit">Cadastrar</Button>
         {message && <Message>{message}</Message>}
+      <P style={{ fontSize: "0.8rem", textAlign: "center" }}>
+            Já tem uma conta? <Login href="/login" >Login</Login>
+        </P>
       </Form>
     </Container>
   );
@@ -82,6 +85,7 @@ export default function Cadastro() {
 
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   margin-top: 2rem;
   font-family: "Poppins", sans-serif;
@@ -145,3 +149,13 @@ const PhotoLabel = styled.label`
     color: white;
   }
 `;
+
+const Login = styled.a`
+  color: #34B7F1;
+  font-weight: bold;
+`
+
+const P = styled.p`
+  font-size: 0.8rem;
+  text-align: center;
+`
