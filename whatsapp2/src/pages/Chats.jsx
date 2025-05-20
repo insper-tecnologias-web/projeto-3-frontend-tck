@@ -51,7 +51,11 @@ export default function Chats() {
       {user && (
         <User>
           {user.photo ? (
-            <img src={`http://localhost:8000${user.photo}`} />
+            <img
+              src={`http://localhost:8000${user.photo}`}
+              alt={user.name}
+              style={{ width: "25px", height: "25px", borderRadius: "50%" }}
+            />
           ) : (
             <UserCircle size={25} weight="fill" />
           )}
@@ -73,11 +77,12 @@ export default function Chats() {
         {chats.length > 0 ? (
           chats.map((chat) => (
             <Contact key={chat.id} onClick={() => handleGetChat(chat.id)}>
-              {chat.image ? (
+              {chat.photo ? (
                 <ProfilePhoto>
                   <img
                     src={`http://localhost:8000${chat.photo}`}
                     alt={chat.name}
+                    style={{ width: "50px", height: "50px" }}
                   />
                 </ProfilePhoto>
               ) : (
@@ -157,6 +162,6 @@ const AddContact = styled.div`
 const ProfilePhoto = styled.div`
   border-radius: 50%;
   overflow: hidden;
-  width: 50px;
-  height: 50px;
+    width: 50px;
+    height: 50px;
 `;
