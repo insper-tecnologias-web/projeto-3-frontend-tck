@@ -23,7 +23,7 @@ export default function LoginPage() {
                 localStorage.setItem("token", response.data.token);
                 navigate("/chats");
             }
-        } catch (err) {
+        } catch {
             setError("Senha ou usuário inválido");
         }
     }
@@ -48,9 +48,9 @@ export default function LoginPage() {
                 />
             <Button type="submit">Login</Button>
         {error && <p>{error}</p>}
-        <p>
-            Não tem uma conta? <a href="/cadastro">Registrar</a>
-        </p>
+        <P style={{ fontSize: "0.8rem", textAlign: "center" }}>
+            Não tem uma conta? <Register href="/cadastro" >Registrar</Register>
+        </P>
         </Form>
     </Container>
     )
@@ -58,6 +58,8 @@ export default function LoginPage() {
 
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   margin-top: 2rem;
   font-family: "Poppins", sans-serif;
@@ -95,3 +97,12 @@ const Title = styled.h1`
   font-size: 1.5rem;
   text-align: center;
 `;
+
+const Register = styled.a`
+  color: #34B7F1;
+  font-weight: bold;
+`
+const P = styled.p`
+  font-size: 0.8rem;
+  text-align: center;
+`
