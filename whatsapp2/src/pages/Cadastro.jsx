@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { CameraPlus } from "@phosphor-icons/react";
 
 export default function Cadastro() {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ export default function Cadastro() {
     phone: "",
   });
 
+  const [photo, setPhoto] = useState(null); 
   const [message, setMessage] = useState(null);
 
   const handleChange = (e) => {
@@ -24,17 +26,30 @@ export default function Cadastro() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage(null);
+
+    const formData = new FormData(); 
+    for (let key in form) {
+      formData.append(key, form[key]); 
+    }
+    if (photo) {
+      formData.append("photo", photo); 
+    }
+
     try {
-        await axios.post("http://localhost:8000/auth/create-user/", form);
-        setMessage("Cadastro realizado com sucesso!");
-        setTimeout(() => navigate("/chats"), 2000);
+      await axios.post("http://localhost:8000/auth/create-user/", formData, {
+        
+        headers: {
+          "Content-Type": "multipart/form-data", 
+        },
+      });
+      setMessage("Cadastro realizado com sucesso!");
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-        console.log(err.response); 
-        if (err.response?.data?.erro) {
-            setMessage("Erro: " + err.response.data.erro);
-        } else {
-            setMessage("Erro ao cadastrar.");
-        }
+      if (err.response?.data?.erro) {
+        setMessage("Erro: " + err.response.data.erro);
+      } else {
+        setMessage("Erro ao cadastrar.");
+      }
     }
   };
 
@@ -42,6 +57,15 @@ export default function Cadastro() {
     <Container>
       <Form onSubmit={handleSubmit}>
         <Title>Cadastro</Title>
+        <PhotoLabel htmlFor="photo">
+          <CameraPlus size={32} />
+        </PhotoLabel>
+        <HiddenInput
+          id="photo"
+          type="file"
+          accept="image/*"
+          onChange={(e) => setPhoto(e.target.files[0])}
+        />
         <Input name="name" placeholder="Nome" onChange={handleChange} required />
         <Input name="surname" placeholder="Sobrenome" onChange={handleChange} required />
         <Input name="email" placeholder="Email" onChange={handleChange} type="email" required />
@@ -57,6 +81,7 @@ export default function Cadastro() {
     </Container>
   );
 }
+
 
 const Container = styled.div`
   display: flex;
@@ -99,10 +124,37 @@ const Title = styled.h1`
   text-align: center;
 `;
 
+const HiddenInput = styled.input`
+  display: none;
+`;
+
+const PhotoLabel = styled.label`
+  width: 70px;
+  height: 70px;
+  border: 2px solid #007BFF;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #007BFF;
+  font-size: 2.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  align-self: center; /* Centraliza no Form */
+  margin-top: 0.5rem;
+
+  &:hover {
+    background-color: #007BFF;
+    color: white;
+  }
+`;
+
 const Login = styled.a`
   color: #34B7F1;
   font-weight: bold;
 `
+
 const P = styled.p`
   font-size: 0.8rem;
   text-align: center;
