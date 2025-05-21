@@ -5,7 +5,7 @@ import App from './App.jsx'
 import Cadastro from './pages/Cadastro.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import AddContact from './pages/AddContact.jsx';
-
+import Chats from './pages/Chats.jsx';
 
 const router = createBrowserRouter([
   {
@@ -24,6 +24,10 @@ const router = createBrowserRouter([
     path: "/add-contact",
     element: <AddContact />,
   },
+  {
+    path: "/chats",
+    element: <Chats />,
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(
