@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App.jsx'
 import Cadastro from './pages/Cadastro.jsx';
 import LoginPage from './pages/LoginPage.jsx';
+import AddContact from './pages/AddContact.jsx';
 import Chats from './pages/Chats.jsx';
 
 const router = createBrowserRouter([
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/add-contact",
+    element: <AddContact />,
   },
   {
     path: "/chats",
