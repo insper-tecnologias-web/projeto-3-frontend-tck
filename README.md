@@ -4,5 +4,11 @@
 ## Rodar o projeto
 npm run dev
 
+## Sprints 
+* Sprint 1: Organização do projeto, separação de tarefas entre os membros do grupo;
+* Sprint 2: Cadastro, Login, Add Contatos, Chats;
+* Sprint 3: Chat, Envio de mensagens, Ajustes Finais, WebSocket, Deploy.
+
+
 ## Fluxo de telas do projeto
 ![Fluxo de telas](<fluxo de telas whatsapp2.jpg>)
