@@ -31,6 +31,7 @@ export default function AddContact() {
       if (res.ok) {
         setMessage({ type: 'success', text: data.mensagem || 'Contato adicionado com sucesso!' });
         setPhone('');
+        navigate("/chats")
       } else {
         setMessage({ type: 'error', text: data.erro || data.detail || 'Erro ao adicionar contato.' });
       }

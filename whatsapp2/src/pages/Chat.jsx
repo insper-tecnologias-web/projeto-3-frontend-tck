@@ -1,0 +1,177 @@
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import axios from "axios";
+
+export default function Chat() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  const [contact, setContact] = useState(null);
+  const [user, setUser] = useState(null); 
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    fetchData();
+  }, [id, token, navigate]);
+
+  const fetchData = async () => {
+    try {
+      const contactResponse = await axios.get(`http://localhost:8000/api/get-contact/${id}/`, {
+        headers: { Authorization: `Token ${token}` },
+      });
+      setContact(contactResponse.data.contact);
+      setUser(contactResponse.data.user); 
+
+      const messagesResponse = await axios.get(`http://localhost:8000/api/get-messages/?contact_id=${id}`, {
+        headers: { Authorization: `Token ${token}` },
+      });
+      setMessages(messagesResponse.data);
+      setError(null);
+    } catch (err) {
+      console.log(err);
+      setError("Erro ao carregar histórico de mensagens.");
+    }
+  };
+
+  const handleSend = async () => {
+    if (newMessage.trim() === "") return;
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/send-message/",
+        {
+          receiver_id: id,
+          message: newMessage,
+        },
+        {
+          headers: { Authorization: `Token ${token}` },
+        }
+      );
+      setMessages([...messages, response.data]);
+      setNewMessage("");
+    } catch (err) {
+      console.log(err);
+      setError("Erro ao enviar mensagem.");
+    }
+  };
+
+  if (!contact || !user) return <div>Carregando...</div>;
+
+  return (
+    <Container>
+      <Header>
+        <ButtonBack onClick={() => navigate("/chats")}>⬅ Voltar</ButtonBack>
+        <Img src={`http://localhost:8000${contact.photo}`} alt="Contact" />
+        <h2>{contact.name} {contact.surname}</h2>
+      </Header>
+
+      <Messages>
+        {error && <ErrorMsg>{error}</ErrorMsg>}
+        {messages.map((m) => (
+          <Message
+            key={m.id}
+            isMe={m.sender === user.id} 
+          >
+            {m.message}
+          </Message>
+        ))}
+      </Messages>
+
+      <InputArea>
+        <input
+          type="text"
+          placeholder="Digite sua mensagem..."
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+        />
+        <button onClick={handleSend}>Enviar</button>
+      </InputArea>
+    </Container>
+  );
+}
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: "Poppins", sans-serif;
+`;
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+`;
+
+const Img = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+`;
+
+const Messages = styled.div`
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const Message = styled.div`
+  align-self: ${(props) => (props.isMe ? "flex-end" : "flex-start")};
+  background-color: ${(props) => (props.isMe ? "#34B7F1" : "#ddd")};
+  color: ${(props) => (props.isMe ? "white" : "black")};
+  padding: 0.6rem;
+  border-radius: 10px;
+  max-width: 60%;
+`;
+
+const InputArea = styled.div`
+  display: flex;
+  border-top: 1px solid #ddd;
+  padding: 1rem;
+  gap: 0.5rem;
+
+  input {
+    flex: 1;
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+
+  button {
+    background-color: #34B7F1;
+    color: white;
+    padding: 0.75rem 1rem;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+`;
+
+const ButtonBack = styled.button`
+  background-color: transparent;
+  border: none;
+  color: #34B7F1;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  font-weight: bold;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+
