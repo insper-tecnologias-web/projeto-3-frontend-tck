@@ -63,7 +63,7 @@ export default function Chats() {
         </User>
       )}
       <Sair onClick={() => handleLogout()}>
-        <SignOut size={35} weight="bold" />
+        <SignOut size={35} />
       </Sair>
       <AddContact onClick={() => handleAddContact()}>
         <PlusCircle size={50} />
@@ -90,7 +90,7 @@ export default function Chats() {
                   <UserCircle size={50} weight="fill" />
                 </ProfilePhoto>
               )}
-              <h2>
+              <h2 style={{"color": "#28a0c5"}}>
                 {chat.name} {chat.surname}
               </h2>
             </Contact>
@@ -109,9 +109,10 @@ const Container = styled.div`
   justify-content: center;
   margin-top: 3.5rem;
   font-family: "Poppins", sans-serif;
+  padding: 0.5rem;
 `;
 const TitleContainer = styled.div`
-  border-bottom: 3px solid black;
+  border-bottom: 2px solid black;
   margin-bottom: 0.5rem;
 `;
 const Title = styled.h1`
@@ -128,10 +129,12 @@ const Contact = styled.div`
   padding: 0 0.5rem;
   border-radius: 8px;
   background-color: #f0f0f0;
+  border-bottom: 0.01rem solid #28a0c5;
   cursor: pointer;
   font-size: 0.8rem;
   gap: 0.5rem;
   font-family: "Poppins", sans-serif;
+  
 `;
 const User = styled.div`
   position: absolute;
@@ -150,14 +153,14 @@ const Sair = styled.div`
   top: 10px;
   right: 10px;
   cursor: pointer;
-  color: #34b7f1;
+  color: #28a0c5;
 `;
 const AddContact = styled.div`
   position: absolute;
   bottom: 10px;
   right: 10px;
   cursor: pointer;
-  color: #34b7f1;
+  color: #28a0c5;
 `;
 const ProfilePhoto = styled.div`
   border-radius: 50%;

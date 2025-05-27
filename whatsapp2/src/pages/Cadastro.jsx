@@ -82,11 +82,11 @@ export default function Cadastro() {
   );
 }
 
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   margin-top: 2rem;
   font-family: "Poppins", sans-serif;
 `;
@@ -94,8 +94,9 @@ const Container = styled.div`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   width: 350px;
-  gap: 1rem;
+  gap: 0.8rem;
 `;
 
 const Input = styled.input`
@@ -104,7 +105,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  background-color: #34B7F1;
+  background-color: #28a0c5;
   color: white;
   padding: 0.75rem;
   font-weight: bold;
@@ -121,7 +122,7 @@ const Message = styled.p`
 
 const Title = styled.h1`
   font-size: 1.5rem;
-  text-align: center;
+  text-align: center; 
 `;
 
 const HiddenInput = styled.input`
@@ -131,12 +132,12 @@ const HiddenInput = styled.input`
 const PhotoLabel = styled.label`
   width: 70px;
   height: 70px;
-  border: 2px solid #007BFF;
+  border: 2px solid #28a0c5;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #007BFF;
+  color: #28a0c5;
   font-size: 2.5rem;
   font-weight: bold;
   cursor: pointer;
@@ -145,13 +146,13 @@ const PhotoLabel = styled.label`
   margin-top: 0.5rem;
 
   &:hover {
-    background-color: #007BFF;
+    background-color: #28a0c5;
     color: white;
   }
 `;
 
 const Login = styled.a`
-  color: #34B7F1;
+  color: #28a0c5;
   font-weight: bold;
 `
 
