@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { ArrowUDownLeft } from "@phosphor-icons/react";
+
 
 export default function AddContact() {
   const [phone, setPhone] = useState('');
@@ -36,12 +38,16 @@ export default function AddContact() {
         setMessage({ type: 'error', text: data.erro || data.detail || 'Erro ao adicionar contato.' });
       }
     } catch (err) {
+      console.log(err)
       setMessage({ type: 'error', text: 'Erro de conexão.' });
     }
   };
 
   return (
     <PageContainer>
+      <Voltar>
+        <ArrowUDownLeft size={32}onClick={() => navigate("/chats")}/>
+      </Voltar>
       <FormContainer onSubmit={handleSubmit}>
         <Title>Adicionar Contato</Title>
         <Label htmlFor="phone">Telefone:</Label>
@@ -64,26 +70,20 @@ const PageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-color: #f9f9f9;
+  margin-top: 2rem;
   font-family: 'Poppins', sans-serif;
 `;
 
 const FormContainer = styled.form`
-  background: #fff;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  width: 320px;
   display: flex;
   flex-direction: column;
+  width: 350px;
   gap: 1rem;
 `;
 
-const Title = styled.h2`
-  margin: 0;
+const Title = styled.h1`
+  font-size: 1.5rem;
   text-align: center;
-  color: #333;
 `;
 
 const Label = styled.label`
@@ -97,14 +97,14 @@ const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px;
   outline: none;
-  &:focus { border-color: #34b7f1; }
+  &:focus { border-color: #28a0c5; }
 `;
 
 const Button = styled.button`
   padding: 0.75rem;
   font-size: 1rem;
   color: #fff;
-  background-color: #34b7f1;
+  background-color: #28a0c5;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -120,3 +120,11 @@ const Alert = styled.div`
   text-align: center;
   font-size: 0.9rem;
 `;
+
+const Voltar = styled.div`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  cursor: pointer;
+  color: #28a0c5;
+`

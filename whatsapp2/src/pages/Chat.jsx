@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
+import { ArrowUDownLeft, UserCircle } from "@phosphor-icons/react";
 
 export default function Chat() {
   const { id } = useParams();
@@ -9,7 +10,7 @@ export default function Chat() {
   const token = localStorage.getItem("token");
 
   const [contact, setContact] = useState(null);
-  const [user, setUser] = useState(null); 
+  const [user, setUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [error, setError] = useState(null);
@@ -24,15 +25,21 @@ export default function Chat() {
 
   const fetchData = async () => {
     try {
-      const contactResponse = await axios.get(`http://localhost:8000/api/get-contact/${id}/`, {
-        headers: { Authorization: `Token ${token}` },
-      });
+      const contactResponse = await axios.get(
+        `http://localhost:8000/api/get-contact/${id}/`,
+        {
+          headers: { Authorization: `Token ${token}` },
+        }
+      );
       setContact(contactResponse.data.contact);
-      setUser(contactResponse.data.user); 
+      setUser(contactResponse.data.user);
 
-      const messagesResponse = await axios.get(`http://localhost:8000/api/get-messages/?contact_id=${id}`, {
-        headers: { Authorization: `Token ${token}` },
-      });
+      const messagesResponse = await axios.get(
+        `http://localhost:8000/api/get-messages/?contact_id=${id}`,
+        {
+          headers: { Authorization: `Token ${token}` },
+        }
+      );
       setMessages(messagesResponse.data);
       setError(null);
     } catch (err) {
@@ -65,20 +72,34 @@ export default function Chat() {
   if (!contact || !user) return <div>Carregando...</div>;
 
   return (
+
     <Container>
+      <Voltar>
+        <ArrowUDownLeft size={32} onClick={() => navigate("/chats")} />
+      </Voltar>
       <Header>
-        <ButtonBack onClick={() => navigate("/chats")}>⬅ Voltar</ButtonBack>
-        <Img src={`http://localhost:8000${contact.photo}`} alt="Contact" />
-        <h2>{contact.name} {contact.surname}</h2>
+        {contact.photo ? (
+          <ProfilePhoto>
+            <img
+              src={`http://localhost:8000${contact.photo}`}
+              alt={contact.name}
+              style={{ width: "50px", height: "50px" }}
+              />
+          </ProfilePhoto>
+        ) : (
+          <ProfilePhoto>
+            <UserCircle size={50} weight="fill" />
+          </ProfilePhoto>
+        )}
+        <h2>
+          {contact.name} {contact.surname}
+        </h2>
       </Header>
 
       <Messages>
         {error && <ErrorMsg>{error}</ErrorMsg>}
         {messages.map((m) => (
-          <Message
-            key={m.id}
-            isMe={m.sender === user.id} 
-          >
+          <Message key={m.id} isMe={m.sender === user.id}>
             {m.message}
           </Message>
         ))}
@@ -90,25 +111,28 @@ export default function Chat() {
           placeholder="Digite sua mensagem..."
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-        />
+          />
         <button onClick={handleSend}>Enviar</button>
       </InputArea>
     </Container>
   );
+
 }
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow: hidden; 
   font-family: "Poppins", sans-serif;
+  margin: 0rem;
 `;
 
 const Header = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem;
+  padding: 0.5rem;
   border-bottom: 1px solid #ddd;
 `;
 
@@ -120,8 +144,10 @@ const Img = styled.img`
 `;
 
 const Messages = styled.div`
-  flex: 1;
-  padding: 1rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.5rem;
   overflow-y: auto;
   background-color: #f4f4f4;
   display: flex;
@@ -131,7 +157,7 @@ const Messages = styled.div`
 
 const Message = styled.div`
   align-self: ${(props) => (props.isMe ? "flex-end" : "flex-start")};
-  background-color: ${(props) => (props.isMe ? "#34B7F1" : "#ddd")};
+  background-color: ${(props) => (props.isMe ? "#28a0c5" : "#ddd")};
   color: ${(props) => (props.isMe ? "white" : "black")};
   padding: 0.6rem;
   border-radius: 10px;
@@ -141,37 +167,38 @@ const Message = styled.div`
 const InputArea = styled.div`
   display: flex;
   border-top: 1px solid #ddd;
-  padding: 1rem;
+  padding: 0.5rem;
   gap: 0.5rem;
 
   input {
     flex: 1;
     padding: 0.75rem;
     font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
   }
 
   button {
-    background-color: #34B7F1;
+    background-color: #28a0c5;
     color: white;
     padding: 0.75rem 1rem;
     border: none;
     cursor: pointer;
     font-weight: bold;
+    border-radius: 4px;
   }
 `;
 
-const ButtonBack = styled.button`
-  background-color: transparent;
-  border: none;
-  color: #34B7F1;
-  font-size: 1rem;
+const Voltar = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
   cursor: pointer;
-  padding: 0.5rem;
-  font-weight: bold;
-
-  &:hover {
-    text-decoration: underline;
-  }
+  color: #28a0c5;
 `;
-
-
+const ProfilePhoto = styled.div`
+  border-radius: 50%;
+  overflow: hidden;
+    width: 50px;
+    height: 50px;
+`;

@@ -75,16 +75,21 @@ const Form = styled.form`
 const Input = styled.input`
   padding: 0.75rem;
   font-size: 1rem;
+  border-radius: 4px;
+  outline: none;
+  &:focus { border-color: #28a0c5; }
+  border: 1px solid #ccc;
 `;
 
 const Button = styled.button`
-  background-color: #34B7F1;
+  background-color: #28a0c5;
   color: white;
   padding: 0.75rem;
   font-weight: bold;
   border: none;
   cursor: pointer;
   font-size: 1rem;
+  border-radius: 4px;
 `;
 
 const Message = styled.p`
@@ -99,7 +104,7 @@ const Title = styled.h1`
 `;
 
 const Register = styled.a`
-  color: #34B7F1;
+  color: #28a0c5;
   font-weight: bold;
 `
 const P = styled.p`
