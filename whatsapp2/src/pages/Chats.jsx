@@ -21,7 +21,7 @@ export default function Chats() {
       return;
     }
     try {
-      const response = await axios.get("http://localhost:8000/api/chats/", {
+      const response = await axios.get("https://projeto-3-whatsapp2.onrender.com/api/chats/", {
         headers: {
           Authorization: `Token ${token}`,
         },
@@ -52,7 +52,7 @@ export default function Chats() {
         <User>
           {user.photo ? (
             <img
-              src={`http://localhost:8000${user.photo}`}
+              src={`https://projeto-3-whatsapp2.onrender.com${user.photo}`}
               alt={user.name}
               style={{ width: "25px", height: "25px", borderRadius: "50%" }}
             />
@@ -80,7 +80,7 @@ export default function Chats() {
               {chat.photo ? (
                 <ProfilePhoto>
                   <img
-                    src={`http://localhost:8000${chat.photo}`}
+                    src={`https://projeto-3-whatsapp2.onrender.com${chat.photo}`}
                     alt={chat.name}
                     style={{ width: "50px", height: "50px" }}
                   />

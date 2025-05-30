@@ -58,7 +58,7 @@ export default function Chat() {
   const fetchData = async () => {
     try {
       const contactResponse = await axios.get(
-        `http://localhost:8000/api/get-contact/${id}/`,
+        `https://projeto-3-whatsapp2.onrender.com/api/get-contact/${id}/`,
         {
           headers: { Authorization: `Token ${token}` },
         }
@@ -67,7 +67,7 @@ export default function Chat() {
       setUser(contactResponse.data.user);
 
       const messagesResponse = await axios.get(
-        `http://localhost:8000/api/get-messages/?contact_id=${id}`,
+        `https://projeto-3-whatsapp2.onrender.com/api/get-messages/?contact_id=${id}`,
         {
           headers: { Authorization: `Token ${token}` },
         }
@@ -92,7 +92,7 @@ export default function Chat() {
         {contact.photo ? (
           <ProfilePhoto>
             <img
-              src={`http://localhost:8000${contact.photo}`}
+              src={`https://projeto-3-whatsapp2.onrender.com${contact.photo}`}
               alt={contact.name}
               style={{ width: "50px", height: "50px" }}
               />

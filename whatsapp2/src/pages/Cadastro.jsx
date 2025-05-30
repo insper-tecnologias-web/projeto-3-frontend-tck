@@ -36,7 +36,7 @@ export default function Cadastro() {
     }
 
     try {
-      await axios.post("http://localhost:8000/auth/create-user/", formData, {
+      await axios.post("https://projeto-3-whatsapp2.onrender.com/auth/create-user/", formData, {
         
         headers: {
           "Content-Type": "multipart/form-data", 

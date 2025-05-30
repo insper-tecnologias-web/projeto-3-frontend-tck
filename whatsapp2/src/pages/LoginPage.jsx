@@ -14,7 +14,7 @@ export default function LoginPage() {
         setError("");
 
         try {
-            const response = await axios.post("http://localhost:8000/api/token/", {
+            const response = await axios.post("https://projeto-3-whatsapp2.onrender.com/api/token/", {
                 username,
                 password,
             });

@@ -20,7 +20,7 @@ export default function AddContact() {
     }
 
     try {
-      const res = await fetch('http://localhost:8000/api/add-contact/', {
+      const res = await fetch('https://projeto-3-whatsapp2.onrender.com/api/add-contact/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
