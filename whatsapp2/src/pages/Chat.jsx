@@ -1,20 +1,52 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import { ArrowUDownLeft, UserCircle } from "@phosphor-icons/react";
 
+
+const roomName = 'lobby';
+
 export default function Chat() {
   const { id } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-
+  
   const [contact, setContact] = useState(null);
   const [user, setUser] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState("");
   const [error, setError] = useState(null);
+  
+  // WebSocket 
+  const socketRef = useRef(null);   // WebSocket socket ref
+  const [message, setMessage] = useState('');  // msg input
 
+  // monta e desmonta socket uma vez
+  useEffect(() => {
+    const ws = new WebSocket(`ws://localhost:8000/ws/chat/${roomName}/`);
+    socketRef.current = ws;
+    ws.onopen = () => console.log("WebSocket conectado");
+    ws.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      setMessages(prev => [...prev, data]);
+    };
+    ws.onclose = (e) => console.error('WebSocket fechado inesperadamente', e);
+    ws.onerror = (e) => console.error('WebSocket erro', e);
+    return () => ws.close();
+  }, []);
+
+  const enviar = () => {
+    if (!message.trim()) return;
+    socketRef.current.send(JSON.stringify({
+      message,
+      sender: user.id,
+      receiver: id,
+    }));
+    setMessage('');
+  }
+
+  ///////////////////////////////////////////////////
+  
   useEffect(() => {
     if (!token) {
       navigate("/login");
@@ -45,27 +77,6 @@ export default function Chat() {
     } catch (err) {
       console.log(err);
       setError("Erro ao carregar histórico de mensagens.");
-    }
-  };
-
-  const handleSend = async () => {
-    if (newMessage.trim() === "") return;
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/api/send-message/",
-        {
-          receiver_id: id,
-          message: newMessage,
-        },
-        {
-          headers: { Authorization: `Token ${token}` },
-        }
-      );
-      setMessages([...messages, response.data]);
-      setNewMessage("");
-    } catch (err) {
-      console.log(err);
-      setError("Erro ao enviar mensagem.");
     }
   };
 
@@ -109,10 +120,15 @@ export default function Chat() {
         <input
           type="text"
           placeholder="Digite sua mensagem..."
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          />
-        <button onClick={handleSend}>Enviar</button>
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              enviar();
+            }
+          }}
+        />
+        <button onClick={enviar}>Enviar</button>
       </InputArea>
     </Container>
   );
