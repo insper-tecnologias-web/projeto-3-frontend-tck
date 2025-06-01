@@ -1,5 +1,13 @@
 import styled from 'styled-components'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 function App() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    navigate('/login', { replace: true });
+  }, [navigate]);
 
   return (
     <Container>
@@ -10,7 +18,6 @@ function App() {
 
 export default App
 
-// O css deverá ser adicionado dessa forma!
 const Container = styled.div`
   display: flex;
   flex-direction: column;

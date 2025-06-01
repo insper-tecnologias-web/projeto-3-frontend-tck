@@ -15,9 +15,10 @@ export default function Cadastro() {
     surname: "",
     phone: "",
   });
-
-  const [photo, setPhoto] = useState(null); 
-  const [message, setMessage] = useState(null);
+  const [photo, setPhoto] = useState(null);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,31 +26,50 @@ export default function Cadastro() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage(null);
+    setMessage("");
+    setError("");
+    setLoading(true);
 
-    const formData = new FormData(); 
+    const formData = new FormData();
     for (let key in form) {
-      formData.append(key, form[key]); 
+      formData.append(key, form[key]);
     }
     if (photo) {
-      formData.append("photo", photo); 
+      formData.append("photo", photo);
     }
 
     try {
-      await axios.post("https://projeto-3-whatsapp2.onrender.com/auth/create-user/", formData, {
-        
-        headers: {
-          "Content-Type": "multipart/form-data", 
-        },
-      });
-      setMessage("Cadastro realizado com sucesso!");
-      setTimeout(() => navigate("/login"), 2000);
-    } catch (err) {
-      if (err.response?.data?.erro) {
-        setMessage("Erro: " + err.response.data.erro);
+      const response = await axios.post(
+        "https://projeto-3-whatsapp2.onrender.com/auth/create-user/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        setMessage("Cadastro realizado com sucesso!");
+        setTimeout(() => navigate("/login"), 2000);
       } else {
-        setMessage("Erro ao cadastrar.");
+        setError("Ocorreu um problema ao cadastrar. Tente novamente.");
       }
+    } catch (err) {
+      if (err.response && err.response.data) {
+        const data = err.response.data;
+        if (data.erro) {
+          setError(data.erro);
+        } else if (data.detail) {
+          setError(data.detail);
+        } else {
+          setError("Erro desconhecido ao cadastrar.");
+        }
+      } else {
+        setError("Não foi possível conectar ao servidor.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,25 +77,78 @@ export default function Cadastro() {
     <Container>
       <Form onSubmit={handleSubmit}>
         <Title>Cadastro</Title>
-        <PhotoLabel htmlFor="photo">
+
+        <PhotoLabel htmlFor="photo" aria-disabled={loading}>
           <CameraPlus size={32} />
         </PhotoLabel>
         <HiddenInput
           id="photo"
           type="file"
           accept="image/*"
+          disabled={loading}
           onChange={(e) => setPhoto(e.target.files[0])}
         />
-        <Input name="name" placeholder="Nome" onChange={handleChange} required />
-        <Input name="surname" placeholder="Sobrenome" onChange={handleChange} required />
-        <Input name="email" placeholder="Email" onChange={handleChange} type="email" required />
-        <Input name="phone" placeholder="Telefone" onChange={handleChange} required />
-        <Input name="username" placeholder="Usuário" onChange={handleChange} required />
-        <Input name="password" placeholder="Senha" onChange={handleChange} type="password" required />
-        <Button type="submit">Cadastrar</Button>
-        {message && <Message>{message}</Message>}
-      <P style={{ fontSize: "0.8rem", textAlign: "center" }}>
-            Já tem uma conta? <Login href="/login" >Login</Login>
+
+        <Input
+          name="name"
+          placeholder="Nome"
+          onChange={handleChange}
+          value={form.name}
+          required
+          disabled={loading}
+        />
+        <Input
+          name="surname"
+          placeholder="Sobrenome"
+          onChange={handleChange}
+          value={form.surname}
+          required
+          disabled={loading}
+        />
+        <Input
+          name="email"
+          placeholder="Email"
+          onChange={handleChange}
+          value={form.email}
+          type="email"
+          required
+          disabled={loading}
+        />
+        <Input
+          name="phone"
+          placeholder="Telefone"
+          onChange={handleChange}
+          value={form.phone}
+          required
+          disabled={loading}
+        />
+        <Input
+          name="username"
+          placeholder="Usuário"
+          onChange={handleChange}
+          value={form.username}
+          required
+          disabled={loading}
+        />
+        <Input
+          name="password"
+          placeholder="Senha"
+          onChange={handleChange}
+          value={form.password}
+          type="password"
+          required
+          disabled={loading}
+        />
+
+        <Button type="submit" disabled={loading}>
+          {loading ? "Processando..." : "Cadastrar"}
+        </Button>
+
+        {message && <SuccessMessage>{message}</SuccessMessage>}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+
+        <P style={{ fontSize: "0.8rem", textAlign: "center" }}>
+          Já tem uma conta? <Login href="/login">Login</Login>
         </P>
       </Form>
     </Container>
@@ -102,6 +175,17 @@ const Form = styled.form`
 const Input = styled.input`
   padding: 0.75rem;
   font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+
+  &:focus {
+    border-color: #28a0c5;
+  }
+
+  &[disabled] {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+  }
 `;
 
 const Button = styled.button`
@@ -112,17 +196,29 @@ const Button = styled.button`
   border: none;
   cursor: pointer;
   font-size: 1rem;
+  border-radius: 4px;
+
+  &[disabled] {
+    background-color: #a0cbd3;
+    cursor: not-allowed;
+  }
 `;
 
-const Message = styled.p`
+const SuccessMessage = styled.p`
   font-size: 1rem;
   text-align: center;
   color: green;
 `;
 
+const ErrorMessage = styled.p`
+  font-size: 1rem;
+  text-align: center;
+  color: #c53030;
+`;
+
 const Title = styled.h1`
   font-size: 1.5rem;
-  text-align: center; 
+  text-align: center;
 `;
 
 const HiddenInput = styled.input`
@@ -142,8 +238,13 @@ const PhotoLabel = styled.label`
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
-  align-self: center; /* Centraliza no Form */
+  align-self: center;
   margin-top: 0.5rem;
+
+  &[aria-disabled="true"] {
+    pointer-events: none;
+    opacity: 0.5;
+  }
 
   &:hover {
     background-color: #28a0c5;
@@ -154,9 +255,10 @@ const PhotoLabel = styled.label`
 const Login = styled.a`
   color: #28a0c5;
   font-weight: bold;
-`
+  text-decoration: none;
+`;
 
 const P = styled.p`
   font-size: 0.8rem;
   text-align: center;
-`
+`;
