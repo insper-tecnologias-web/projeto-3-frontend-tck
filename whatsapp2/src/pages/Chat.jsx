@@ -23,7 +23,7 @@ export default function Chat() {
 
   // monta e desmonta socket uma vez
   useEffect(() => {
-    const ws = new WebSocket(`https://projeto-3-whatsapp2.onrender.com/ws/chat/${roomName}/`);
+    const ws = new WebSocket(`wss://projeto-3-whatsapp2.onrender.com/ws/chat/${roomName}/`);
     socketRef.current = ws;
     ws.onopen = () => console.log("WebSocket conectado");
     ws.onmessage = (e) => {
